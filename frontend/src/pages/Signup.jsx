@@ -51,7 +51,7 @@ export default function Signup() {
               <input
                 type="text"
                 className="input"
-                placeholder="John Doe"
+                placeholder="Full name"
                 value={form.name}
                 onChange={(e) => { clearError(); setLocalError(''); setForm({ ...form, name: e.target.value }); }}
                 required
