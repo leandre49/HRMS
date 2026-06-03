@@ -8,6 +8,9 @@ import employeeRoutes from './routes/employeeRoutes.js';
 import departmentRoutes from './routes/departmentRoutes.js';
 import positionRoutes from './routes/positionRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+import purchaseRoutes from './routes/purchaseRoutes.js';
+import saleRoutes from './routes/saleRoutes.js';
 
 const app = express();
 
@@ -29,6 +32,9 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/positions', positionRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/purchases', purchaseRoutes);
+app.use('/api/sales', saleRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

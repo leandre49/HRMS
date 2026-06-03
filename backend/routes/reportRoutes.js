@@ -5,5 +5,6 @@ import { verifyToken } from '../middleware/auth.js';
 
 router.get('/on-leave', verifyToken, reportController.getOnLeaveReport);
 router.get('/status-summary', verifyToken, reportController.getStatusSummary);
+router.get('/dashboard', verifyToken, reportController.getDashboard);
 
 export default router;
