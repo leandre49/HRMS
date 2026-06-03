@@ -6,16 +6,18 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, loading, error, clearError } = useAuth();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ username: '', password: '' });
 
   const from = location.state?.from?.pathname || '/';
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      await login(form.email, form.password);
+      await login(form.username, form.password);
       navigate(from, { replace: true });
-    } catch (_) { }
+    } catch (_) {
+      // Error is already in state
+    }
   }
 
   return (
@@ -35,13 +37,13 @@ export default function Login() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
               <input
-                type="email"
+                type="text"
                 className="input"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={(e) => { clearError(); setForm({ ...form, email: e.target.value }); }}
+                placeholder="your username"
+                value={form.username}
+                onChange={(e) => { clearError(); setForm({ ...form, username: e.target.value }); }}
                 required
               />
             </div>

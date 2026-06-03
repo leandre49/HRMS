@@ -1,7 +1,6 @@
-// backend/controllers/positionController.js
-const Position = require('../models/Position');
+import Position from '../models/Position.js';
 
-exports.getAllPositions = async (req, res) => {
+export const getAllPositions = async (req, res) => {
   try {
     const positions = await Position.find().sort({ createdAt: -1 });
 
@@ -18,7 +17,7 @@ exports.getAllPositions = async (req, res) => {
   }
 };
 
-exports.getPositionById = async (req, res) => {
+export const getPositionById = async (req, res) => {
   try {
     const position = await Position.findById(req.params.id);
 
@@ -41,7 +40,7 @@ exports.getPositionById = async (req, res) => {
   }
 };
 
-exports.createPosition = async (req, res) => {
+export const createPosition = async (req, res) => {
   try {
     const { posName, requiredQualification } = req.body;
 
@@ -72,7 +71,7 @@ exports.createPosition = async (req, res) => {
   }
 };
 
-exports.updatePosition = async (req, res) => {
+export const updatePosition = async (req, res) => {
   try {
     const position = await Position.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -99,7 +98,7 @@ exports.updatePosition = async (req, res) => {
   }
 };
 
-exports.deletePosition = async (req, res) => {
+export const deletePosition = async (req, res) => {
   try {
     const position = await Position.findByIdAndDelete(req.params.id);
 

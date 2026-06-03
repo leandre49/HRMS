@@ -29,11 +29,11 @@ export default function Sidebar() {
         <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-semibold">
-              {user.name?.charAt(0).toUpperCase()}
+              {user.username?.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-              <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+              <p className="text-sm font-medium text-gray-900 truncate">{user.username}</p>
+              <p className="text-xs text-gray-500 capitalize">{user.employee?.position?.posName || 'User'}</p>
             </div>
           </div>
         </div>
@@ -53,7 +53,6 @@ export default function Sidebar() {
               }`
             }
           >
-            <span className="text-lg">{item.icon}</span>
             <span>{item.label}</span>
           </NavLink>
         ))}

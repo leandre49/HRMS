@@ -1,16 +1,31 @@
-import { useEffect } from 'react';
-import { useApp } from '../context/AppContext';
-import StatCard from '../components/StatCard';
+import { useEffect, useState } from 'react';
+import reportService from '../services/reportService';
 
 export default function Dashboard() {
-  const { state, actions } = useApp();
-  const { dashboard, loading } = state;
+  const [statusSummary, setStatusSummary] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    actions.fetchDashboard();
+    loadDashboard();
   }, []);
 
-  if (loading && !dashboard) {
+  async function loadDashboard() {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await reportService.getStatusSummary();
+      setStatusSummary(res.data?.data?.statusSummary || []);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to load dashboard');
+      console.error('Failed to load dashboard:', err);
+    }
+    setLoading(false);
+  }
+
+  const totalEmployees = statusSummary.reduce((sum, item) => sum + item.count, 0);
+
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
@@ -22,90 +37,47 @@ export default function Dashboard() {
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <StatCard
-          title="Total Employees"
-          value={dashboard?.total_employees || 0}
-          
-          color="blue"
-        />
-        <StatCard
-          title="Total Sales"
-          value={dashboard?.total_sales || 0}
-          
-          color="green"
-        />
-        <StatCard
-          title="Total Purchases"
-          value={dashboard?.total_purchases || 0}
-          
-          
-        />
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        {statusSummary.map((item) => (
+          <div key={item._id} className="card text-center">
+            <div className="text-3xl font-bold text-primary-600">{item.count}</div>
+            <div className="text-sm text-gray-600 capitalize mt-2">{item._id}</div>
+          </div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="card">
-          <h2 className="text-lg font-semibold mb-4">Recent Sales</h2>
-          {dashboard?.recent_sales?.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-gray-500 border-b">
-                    <th className="pb-2">Item</th>
-                    <th className="pb-2">Customer</th>
-                    <th className="pb-2">Amount</th>
-                    <th className="pb-2">Employee</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dashboard.recent_sales.map((sale) => (
-                    <tr key={sale.id} className="border-b border-gray-100">
-                      <td className="py-2">{sale.item_name}</td>
-                      <td className="py-2">{sale.customer_name}</td>
-                      <td className="py-2 font-medium">
-                        {new Intl.NumberFormat('en-RW', { style: 'currency', currency: 'RWF', minimumFractionDigits: 0 }).format(sale.total_amount)}
-                      </td>
-                      <td className="py-2">{sale.employee_name || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="text-gray-400 text-sm">No recent sales</p>
-          )}
+      <div className="card">
+        <h2 className="text-lg font-semibold mb-4">Employee Status Overview</h2>
+        <div className="space-y-3">
+          {statusSummary.map((item) => {
+            const percentage = totalEmployees > 0 ? (item.count / totalEmployees) * 100 : 0;
+            return (
+              <div key={item._id} className="flex items-center gap-4">
+                <span className="text-sm font-medium w-24 capitalize">{item._id}</span>
+                <div className="flex-1 bg-gray-100 rounded-full h-8 overflow-hidden">
+                  <div
+                    className="h-full bg-primary-600 flex items-center justify-end pr-3 transition-all"
+                    style={{ width: `${percentage}%`, minWidth: percentage > 0 ? '3rem' : '0' }}
+                  >
+                    {percentage > 10 && <span className="text-xs text-white font-medium">{item.count}</span>}
+                  </div>
+                </div>
+                <span className="text-sm text-gray-600 w-12 text-right">{percentage.toFixed(1)}%</span>
+              </div>
+            );
+          })}
         </div>
-
-        <div className="card">
-          <h2 className="text-lg font-semibold mb-4">Recent Purchases</h2>
-          {dashboard?.recent_purchases?.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-gray-500 border-b">
-                    <th className="pb-2">Item</th>
-                    <th className="pb-2">Supplier</th>
-                    <th className="pb-2">Cost</th>
-                    <th className="pb-2">Employee</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dashboard.recent_purchases.map((purchase) => (
-                    <tr key={purchase.id} className="border-b border-gray-100">
-                      <td className="py-2">{purchase.item_name}</td>
-                      <td className="py-2">{purchase.supplier}</td>
-                      <td className="py-2 font-medium">
-                        {new Intl.NumberFormat('en-RW', { style: 'currency', currency: 'RWF', minimumFractionDigits: 0 }).format(purchase.total_cost)}
-                      </td>
-                      <td className="py-2">{purchase.employee_name || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="text-gray-400 text-sm">No recent purchases</p>
-          )}
+        <div className="mt-6 pt-6 border-t">
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-900">Total Employees</span>
+            <span className="text-2xl font-bold text-primary-600">{totalEmployees}</span>
+          </div>
         </div>
       </div>
     </div>

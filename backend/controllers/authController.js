@@ -1,32 +1,20 @@
-// backend/controllers/authController.js
-const User = require('../models/User');
-const Employee = require('../models/Employee');
-const jwt = require('jsonwebtoken');
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
 
-// Generate JWT Token
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: '7d',
   });
 };
 
-// Register a new user
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
   try {
-    const { username, password, employeeId } = req.body;
+    const { username, password } = req.body;
 
-    if (!username || !password || !employeeId) {
+    if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Username, password, and employee ID are required',
-      });
-    }
-
-    const employee = await Employee.findById(employeeId);
-    if (!employee) {
-      return res.status(404).json({
-        success: false,
-        message: 'Employee not found',
+        message: 'Username and password are required',
       });
     }
 
@@ -38,18 +26,9 @@ exports.register = async (req, res) => {
       });
     }
 
-    user = await User.findOne({ employee: employeeId });
-    if (user) {
-      return res.status(400).json({
-        success: false,
-        message: 'This employee already has a user account',
-      });
-    }
-
     user = new User({
       username,
       password,
-      employee: employeeId,
     });
 
     await user.save();
@@ -63,11 +42,17 @@ exports.register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    await user.populate('employee');
+
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
       token,
-      userId: user._id,
+      user: {
+        id: user._id,
+        username: user.username,
+        employee: user.employee,
+      },
     });
   } catch (error) {
     res.status(500).json({
@@ -77,8 +62,7 @@ exports.register = async (req, res) => {
   }
 };
 
-// Login user
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -134,8 +118,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// Logout user
-exports.logout = (req, res) => {
+export const logout = (req, res) => {
   res.clearCookie('token');
   res.status(200).json({
     success: true,
@@ -143,8 +126,7 @@ exports.logout = (req, res) => {
   });
 };
 
-// Get current user
-exports.getCurrentUser = async (req, res) => {
+export const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.userId).populate('employee');
 

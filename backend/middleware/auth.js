@@ -1,8 +1,6 @@
-// backend/middleware/auth.js
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-// Verify JWT token from cookie
-const verifyToken = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
   try {
     const token = req.cookies.token;
 
@@ -17,5 +15,3 @@ const verifyToken = (req, res, next) => {
     res.status(401).json({ message: 'Token is not valid' });
   }
 };
-
-module.exports = { verifyToken };

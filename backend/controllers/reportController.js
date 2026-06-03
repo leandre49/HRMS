@@ -1,7 +1,6 @@
-// backend/controllers/reportController.js
-const Employee = require('../models/Employee');
+import Employee from '../models/Employee.js';
 
-exports.getOnLeaveReport = async (req, res) => {
+export const getOnLeaveReport = async (req, res) => {
   try {
     const onLeaveEmployees = await Employee.find({ empStatus: 'on leave' })
       .populate('department')
@@ -55,7 +54,7 @@ exports.getOnLeaveReport = async (req, res) => {
   }
 };
 
-exports.getStatusSummary = async (req, res) => {
+export const getStatusSummary = async (req, res) => {
   try {
     const statusSummary = await Employee.aggregate([
       {

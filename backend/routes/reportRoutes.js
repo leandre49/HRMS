@@ -1,10 +1,9 @@
-// backend/routes/reportRoutes.js
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const reportController = require('../controllers/reportController');
-const { verifyToken } = require('../middleware/auth');
+import * as reportController from '../controllers/reportController.js';
+import { verifyToken } from '../middleware/auth.js';
 
 router.get('/on-leave', verifyToken, reportController.getOnLeaveReport);
 router.get('/status-summary', verifyToken, reportController.getStatusSummary);
 
-module.exports = router;
+export default router;

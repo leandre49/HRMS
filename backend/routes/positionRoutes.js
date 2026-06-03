@@ -1,8 +1,7 @@
-// backend/routes/positionRoutes.js
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const positionController = require('../controllers/positionController');
-const { verifyToken } = require('../middleware/auth');
+import * as positionController from '../controllers/positionController.js';
+import { verifyToken } from '../middleware/auth.js';
 
 router.get('/', verifyToken, positionController.getAllPositions);
 router.get('/:id', verifyToken, positionController.getPositionById);
@@ -10,4 +9,4 @@ router.post('/', verifyToken, positionController.createPosition);
 router.put('/:id', verifyToken, positionController.updatePosition);
 router.delete('/:id', verifyToken, positionController.deletePosition);
 
-module.exports = router;
+export default router;

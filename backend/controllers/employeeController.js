@@ -1,8 +1,6 @@
-// backend/controllers/employeeController.js
-const Employee = require('../models/Employee');
+import Employee from '../models/Employee.js';
 
-// Get all employees
-exports.getAllEmployees = async (req, res) => {
+export const getAllEmployees = async (req, res) => {
   try {
     const { search, department, status } = req.query;
 
@@ -42,8 +40,7 @@ exports.getAllEmployees = async (req, res) => {
   }
 };
 
-// Get single employee
-exports.getEmployeeById = async (req, res) => {
+export const getEmployeeById = async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id)
       .populate('department')
@@ -68,8 +65,7 @@ exports.getEmployeeById = async (req, res) => {
   }
 };
 
-// Create new employee
-exports.createEmployee = async (req, res) => {
+export const createEmployee = async (req, res) => {
   try {
     const {
       empFirstName,
@@ -102,8 +98,8 @@ exports.createEmployee = async (req, res) => {
       empAddress,
       empHireDate,
       empStatus,
-      department,
-      position,
+      department: department || undefined,
+      position: position || undefined,
     });
 
     await employee.save();
@@ -129,10 +125,13 @@ exports.createEmployee = async (req, res) => {
   }
 };
 
-// Update employee
-exports.updateEmployee = async (req, res) => {
+export const updateEmployee = async (req, res) => {
   try {
-    const employee = await Employee.findByIdAndUpdate(req.params.id, req.body, {
+    const updateData = { ...req.body };
+    if (updateData.department === '') updateData.department = undefined;
+    if (updateData.position === '') updateData.position = undefined;
+
+    const employee = await Employee.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     })
@@ -165,8 +164,7 @@ exports.updateEmployee = async (req, res) => {
   }
 };
 
-// Delete employee
-exports.deleteEmployee = async (req, res) => {
+export const deleteEmployee = async (req, res) => {
   try {
     const employee = await Employee.findByIdAndDelete(req.params.id);
 

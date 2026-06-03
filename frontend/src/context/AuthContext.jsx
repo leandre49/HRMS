@@ -1,9 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 
 const AuthContext = createContext(null);
-
-const API = '/api/auth';
 
 function getStoredUser() {
   try {
@@ -14,86 +12,110 @@ function getStoredUser() {
   }
 }
 
-function getStoredToken() {
-  return localStorage.getItem('token') || null;
-}
-
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(getStoredUser);
-  const [token, setToken] = useState(getStoredToken);
+  const [user, setUser] = useState(getStoredUser());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
-  const saveSession = useCallback((userData, tokenStr) => {
+  // Check authentication on mount
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = useCallback(async () => {
+    setIsCheckingAuth(true);
+    try {
+      const res = await authService.getCurrentUser();
+      if (res.data?.user) {
+        setUser(res.data.user);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        setIsAuthenticated(true);
+      }
+    } catch (err) {
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem('user');
+    } finally {
+      setIsCheckingAuth(false);
+    }
+  }, []);
+
+  const saveUser = useCallback((userData) => {
     localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', tokenStr);
     setUser(userData);
-    setToken(tokenStr);
+    setIsAuthenticated(true);
   }, []);
 
   const clearSession = useCallback(() => {
     localStorage.removeItem('user');
-    localStorage.removeItem('token');
     setUser(null);
-    setToken(null);
+    setIsAuthenticated(false);
   }, []);
 
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (username, password) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      saveSession(data.user, data.token);
-      return data;
+      const res = await authService.login({ username, password });
+      if (res.data?.user) {
+        saveUser(res.data.user);
+      }
+      return res.data;
     } catch (err) {
-      setError(err.message);
+      const message = err.response?.data?.message || err.message || 'Login failed';
+      setError(message);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, [saveSession]);
+  }, [saveUser]);
 
-  const register = useCallback(async (name, email, password) => {
+  const register = useCallback(async (username, password) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      saveSession(data.user, data.token);
-      return data;
+      const res = await authService.register({ username, password });
+      if (res.data?.user) {
+        saveUser(res.data.user);
+      } else if (res.data?.userId) {
+        saveUser({ id: res.data.userId, username });
+      }
+      return res.data;
     } catch (err) {
-      setError(err.message);
+      const message = err.response?.data?.message || err.message || 'Registration failed';
+      setError(message);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, [saveSession]);
+  }, [saveUser]);
 
-  const logout = useCallback(() => {
-    clearSession();
+  const logout = useCallback(async () => {
+    setLoading(true);
+    try {
+      await authService.logout();
+      clearSession();
+    } catch (err) {
+      console.error('Logout error:', err);
+      clearSession();
+    } finally {
+      setLoading(false);
+    }
   }, [clearSession]);
 
   const value = {
     user,
-    token,
     loading,
     error,
-    isAuthenticated: !!token,
+    isAuthenticated,
+    isCheckingAuth,
     login,
     register,
     logout,
     clearError: () => setError(null),
+    checkAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

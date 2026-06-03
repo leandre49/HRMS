@@ -164,8 +164,8 @@ export default function Purchases() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Processed By</label>
               <select className="input" value={form.employee_id} onChange={(e) => setForm({ ...form, employee_id: e.target.value })}>
                 <option value="">Select employee</option>
-                {employees.filter(e => e.status === 'active').map((e) => (
-                  <option key={e.id} value={e.id}>{e.name}</option>
+                {employees.filter(e => e.empStatus === 'active').map((e) => (
+                  <option key={e._id} value={e._id}>{e.empFirstName} {e.empLastName}</option>
                 ))}
               </select>
             </div>

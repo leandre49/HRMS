@@ -1,6 +1,5 @@
-// backend/models/User.js
-const mongoose = require('mongoose');
-const bcryptjs = require('bcryptjs');
+import mongoose from 'mongoose';
+import bcryptjs from 'bcryptjs';
 
 const userSchema = new mongoose.Schema(
   {
@@ -15,26 +14,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
       minlength: [6, 'Password must be at least 6 characters'],
-      select: false, // Don't return password by default
+      select: false,
     },
     employee: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Employee',
-      required: [true, 'User must be linked to an employee'],
-      unique: true,
+      sparse: true,
+      default: null,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// Hash password before saving
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-
+  if (!this.isModified('password')) return next();
   try {
     const salt = await bcryptjs.genSalt(10);
     this.password = await bcryptjs.hash(this.password, salt);
@@ -44,9 +37,9 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-// Method to compare passwords
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcryptjs.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+export default User;

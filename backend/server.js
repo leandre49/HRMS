@@ -1,16 +1,13 @@
-// backend/server.js
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const connectDB = require('./config/database');
-
-// Import routes
-const authRoutes = require('./routes/authRoutes');
-const employeeRoutes = require('./routes/employeeRoutes');
-const departmentRoutes = require('./routes/departmentRoutes');
-const positionRoutes = require('./routes/positionRoutes');
-const reportRoutes = require('./routes/reportRoutes');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import connectDB from './config/database.js';
+import authRoutes from './routes/authRoutes.js';
+import employeeRoutes from './routes/employeeRoutes.js';
+import departmentRoutes from './routes/departmentRoutes.js';
+import positionRoutes from './routes/positionRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
 
 const app = express();
 
@@ -52,9 +49,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 2000;
+app.listen(PORT, (req,res) => {
   console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = app;
+export default app;

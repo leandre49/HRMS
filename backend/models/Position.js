@@ -1,5 +1,4 @@
-// backend/models/Position.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const positionSchema = new mongoose.Schema(
   {
@@ -18,4 +17,4 @@ const positionSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Position', positionSchema);
+export default mongoose.model('Position', positionSchema);

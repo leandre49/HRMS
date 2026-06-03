@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Signup() {
   const navigate = useNavigate();
   const { register, loading, error, clearError } = useAuth();
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [form, setForm] = useState({ username: '', password: '', confirmPassword: '' });
   const [localError, setLocalError] = useState('');
 
   async function handleSubmit(e) {
@@ -23,7 +23,7 @@ export default function Signup() {
     }
 
     try {
-      await register(form.name, form.email, form.password);
+      await register(form.username, form.password);
       navigate('/', { replace: true });
     } catch (_) { }
   }
@@ -47,25 +47,13 @@ export default function Signup() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
               <input
                 type="text"
                 className="input"
-                placeholder="Full name"
-                value={form.name}
-                onChange={(e) => { clearError(); setLocalError(''); setForm({ ...form, name: e.target.value }); }}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                type="email"
-                className="input"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={(e) => { clearError(); setLocalError(''); setForm({ ...form, email: e.target.value }); }}
+                placeholder="Choose a username"
+                value={form.username}
+                onChange={(e) => { clearError(); setLocalError(''); setForm({ ...form, username: e.target.value }); }}
                 required
               />
             </div>
