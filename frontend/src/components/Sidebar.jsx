@@ -2,11 +2,11 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: '📊' },
-  { to: '/employees', label: 'Employees', icon: '👥' },
-  { to: '/purchases', label: 'Purchases', icon: '📦' },
-  { to: '/sales', label: 'Sales', icon: '💰' },
-  { to: '/reports', label: 'Reports', icon: '📈' },
+  { to: '/', label: 'Dashboard' },
+  { to: '/employees', label: 'Employees' },
+  { to: '/purchases', label: 'Purchases' },
+  { to: '/sales', label: 'Sales'  },
+  { to: '/reports', label: 'Reports' },
 ];
 
 export default function Sidebar() {
@@ -21,7 +21,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
       <div className="p-6 border-b border-gray-200">
-        <h1 className="text-xl font-bold text-primary-700">DAB Enterprise</h1>
+        <h1 className="text-xl font-bold text-primary-700">HRMS Enterprise</h1>
         <p className="text-sm text-gray-500 mt-1">Management System</p>
       </div>
 
@@ -62,10 +62,10 @@ export default function Sidebar() {
       <div className="p-4 border-t border-gray-200">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-700 w-full transition-colors"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-red-100 hover:text-red-700 w-full transition-colors"
         >
-          <span className="text-lg">🚪</span>
-          <span>Logout</span>
+          
+          <span className='text-red-500'>Logout</span>
         </button>
       </div>
     </aside>
