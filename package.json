@@ -1,0 +1,11 @@
+{
+  "name": "dab-enterprise-hrms",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "backend": "npm run dev --prefix backend",
+    "frontend": "npm run dev --prefix frontend",
+    "dev": "npm run backend & npm run frontend",
+    "build": "npm run build --prefix frontend"
+  }
+}
