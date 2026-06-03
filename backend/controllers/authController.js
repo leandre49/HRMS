@@ -18,19 +18,15 @@ export const register = async (req, res) => {
       });
     }
 
-    let user = await User.findOne({ username });
-    if (user) {
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
       return res.status(400).json({
         success: false,
         message: 'Username already exists',
       });
     }
 
-    user = new User({
-      username,
-      password,
-    });
-
+    const user = new User({ username, password });
     await user.save();
 
     const token = generateToken(user._id);
@@ -41,8 +37,6 @@ export const register = async (req, res) => {
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
-    await user.populate('employee');
 
     res.status(201).json({
       success: true,
@@ -82,9 +76,9 @@ export const login = async (req, res) => {
       });
     }
 
-    const isPasswordMatch = await user.comparePassword(password);
+    const isMatch = await user.comparePassword(password);
 
-    if (!isPasswordMatch) {
+    if (!isMatch) {
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials',
