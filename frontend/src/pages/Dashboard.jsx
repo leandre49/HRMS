@@ -26,20 +26,20 @@ export default function Dashboard() {
         <StatCard
           title="Total Employees"
           value={dashboard?.total_employees || 0}
-          icon="👥"
+          
           color="blue"
         />
         <StatCard
           title="Total Sales"
           value={dashboard?.total_sales || 0}
-          icon="💰"
+          
           color="green"
         />
         <StatCard
           title="Total Purchases"
           value={dashboard?.total_purchases || 0}
-          icon="📦"
-          color="yellow"
+          
+          
         />
       </div>
 
