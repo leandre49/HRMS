@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import Employees from './pages/Employees';
+import Departments from './pages/Departments';
 import Purchases from './pages/Purchases';
 import Sales from './pages/Sales';
 import Reports from './pages/Reports';
@@ -26,6 +27,11 @@ function AppRoutes() {
       <Route path="/employees" element={
         <ProtectedRoute>
           <Layout><Employees /></Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/departments" element={
+        <ProtectedRoute>
+          <Layout><Departments /></Layout>
         </ProtectedRoute>
       } />
       <Route path="/purchases" element={

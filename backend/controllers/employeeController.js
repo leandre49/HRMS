@@ -104,7 +104,7 @@ export const createEmployee = async (req, res) => {
 
     await employee.save();
 
-    await employee.populate('department').populate('position');
+    await employee.populate(['department', 'position']);
 
     res.status(201).json({
       success: true,

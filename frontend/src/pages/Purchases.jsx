@@ -141,7 +141,24 @@ export default function Purchases() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
               <select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required>
                 <option value="">Select category</option>
-                {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
+                {[
+                  { name: 'Cement & Binders' },
+                  { name: 'Steel & Reinforcement' },
+                  { name: 'Roofing Materials' },
+                  { name: 'Paints & Finishes' },
+                  { name: 'Plumbing & Pipes' },
+                  { name: 'Electrical Supplies' },
+                  { name: 'Tiles & Flooring' },
+                  { name: 'Timber & Wood' },
+                  { name: 'Glass & Windows' },
+                  { name: 'Hand Tools' },
+                  { name: 'Power Tools' },
+                  { name: 'Safety Equipment' },
+                  { name: 'Aggregates & Sand' },
+                  { name: 'Adhesives & Sealants' },
+                  { name: 'Hardware & Fasteners' },
+                  ...(categories.length ? categories : []),
+                ].map((c, i) => <option key={c.id || c._id || i} value={c.name}>{c.name}</option>)}
               </select>
             </div>
             <div>

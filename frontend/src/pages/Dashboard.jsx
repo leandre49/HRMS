@@ -54,7 +54,7 @@ export default function Dashboard() {
 
       <div className="card">
         <h2 className="text-lg font-semibold mb-4">Employee Status Overview</h2>
-        <div className="space-y-3">
+        {/* <div className="space-y-3">
           {statusSummary.map((item) => {
             const percentage = totalEmployees > 0 ? (item.count / totalEmployees) * 100 : 0;
             return (
@@ -72,7 +72,7 @@ export default function Dashboard() {
               </div>
             );
           })}
-        </div>
+        </div> */}
         <div className="mt-6 pt-6 border-t">
           <div className="flex justify-between items-center">
             <span className="font-semibold text-gray-900">Total Employees</span>
